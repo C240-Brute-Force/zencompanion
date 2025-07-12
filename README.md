@@ -19,13 +19,6 @@ Your always-on AI therapist for managing stress, navigating emotions, and reclai
 - LocalStorage for data persistence
 - Botpress integration
 
-## Getting Started
-
-1. Clone this repository
-2. Open the project in Visual Studio Code
-3. Install the Live Server extension if not already installed
-4. Right-click on `index.html` and select "Open with Live Server"
-
 ## Customization
 - Edit about.html, grounding.html, and journal.html for content
 - Update `style.css` for branding
