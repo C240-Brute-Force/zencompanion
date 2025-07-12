@@ -13,7 +13,7 @@ Your always-on AI therapist for managing stress, navigating emotions, and reclai
 
 ## Technical Stack
 
-- HTML5
+- HTML
 - CSS with modern features
 - JavaScript
 - LocalStorage for data persistence
