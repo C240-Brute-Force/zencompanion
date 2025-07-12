@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journal - ZenCompanion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="top-banner">
+        <header class="top-header">
+            <img src="./assets/logo.png" alt="ZenCompanion Logo" class="zen-logo">
+            <nav class="main-nav">
+                <a href="index.html">Home</a>
+                <a href="about.html">About</a>
+                <a href="journal.html">Journal</a>
+            </nav>
+        </header>
+    </div>
+    
+    <div class="app-container">
+        <header>
+            <h1>Your Journal</h1>
+            <p class="tagline">Reflect, express, and grow with ZenCompanion.</p>
+        </header>
+        <main>
+            <section class="tools-container" style="display: flex; flex-direction: column; align-items: center;">
+                <!-- Mood Tracker -->
+                <div id="moodTracker" style="margin-bottom:1.5rem; text-align:center;">
+                    <label style="font-size:1.1rem; margin-bottom:0.5rem;">How are you feeling?</label><br>
+                    <button class="mood-btn" data-mood="happy" title="Happy" style="font-size:1.5rem;">😊</button>
+                    <button class="mood-btn" data-mood="neutral" title="Neutral" style="font-size:1.5rem;">😐</button>
+                    <button class="mood-btn" data-mood="sad" title="Sad" style="font-size:1.5rem;">😔</button>
+                    <button class="mood-btn" data-mood="anxious" title="Anxious" style="font-size:1.5rem;">😰</button>
+                    <button class="mood-btn" data-mood="stressed" title="Stressed" style="font-size:1.5rem;">😫</button>
+                </div>
+                <form id="journalForm" style="margin-bottom:2rem; max-width:500px; width:100%; text-align:center;">
+                    <label for="journalEntry" style="font-size:1.1rem;">Write your thoughts:</label><br>
+                    <textarea id="journalEntry" name="journalEntry" rows="6" cols="60" placeholder="Start journaling..." style="margin-top:0.5rem; width:100%; max-width:100%; border-radius:12px; border:1px solid #ccc; padding:1rem; font-family:'Nunito',sans-serif; transition:background 0.3s;"></textarea><br>
+                    <button type="submit" id="saveEntryBtn" style="margin-top:0.5rem; padding:0.5rem 1.5rem; background:var(--color-lilac); border:none; border-radius:12px; font-family:'Nunito',sans-serif; font-weight:600; font-size:1.05rem; color:#333; cursor:pointer; transition:background 0.3s;">
+                        Save Entry
+                    </button>
+                </form>
+                <div id="journalHistory" style="width:100%; max-width:500px;">
+                    <!-- Past entries -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p class="crisis-support">Need immediate help? <a href="#" id="crisisSupport">Get Crisis Support</a></p>
+        <p class="zen-footer">24-hour hotline: 1767</p>
+        <p class="zen-footer">&copy; 2025 ZenCompanion.</p>
+    </footer>
+
+    <script>
+        // Mood color mapping
+        const moodColors = {
+            happy: "#C7E8CA",      // Sage
+            neutral: "#F1F3F5",    // Soft Gray
+            sad: "#D6CDEA",        // Lilac
+            anxious: "#ffe0e0",    // Light Red
+            stressed: "#fff3cd"    // Light Yellow
+        };
+
+        let selectedMood = null;
+        const moodBtns = document.querySelectorAll('.mood-btn');
+        const journalEntry = document.getElementById('journalEntry');
+
+        moodBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                selectedMood = btn.getAttribute('data-mood');
+                journalEntry.style.background = moodColors[selectedMood] || "#fff";
+                moodBtns.forEach(b => b.style.opacity = "0.5");
+                btn.style.opacity = "1";
+            });
+        });
+
+        // Journal logic (existing)
+        const journalForm = document.getElementById('journalForm');
+        const journalHistory = document.getElementById('journalHistory');
+
+        function renderJournalHistory() {
+            const entries = JSON.parse(localStorage.getItem('zenJournalEntries') || '[]');
+            if (entries.length === 0) {
+                journalHistory.innerHTML = `<p style="text-align:center;">No journal entries yet. Start writing!</p>`;
+            } else {
+                journalHistory.innerHTML = "<h2>Previous Entries</h2>" +
+                    entries.map((e, idx) => `
+                        <div class="journal-entry" style="background:var(--color-soft-gray);margin-bottom:1rem;padding:1rem;border-radius:12px;position:relative;">
+                            <p>${e.text}</p>
+                            <span style="font-size:0.9rem;color:#888;">${e.date}${e.mood ? " | Mood: " + e.mood : ""}</span>
+                            <button class="delete-entry-btn" data-idx="${idx}" style="position:absolute;top:10px;right:10px;background:#e74c3c;color:#fff;border:none;border-radius:6px;padding:0.3rem 0.7rem;cursor:pointer;">Delete</button>
+                        </div>
+                    `).join('');
+                // Add delete functionality
+                document.querySelectorAll('.delete-entry-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const idx = parseInt(btn.getAttribute('data-idx'));
+                        const entries = JSON.parse(localStorage.getItem('zenJournalEntries') || '[]');
+                        entries.splice(idx, 1);
+                        localStorage.setItem('zenJournalEntries', JSON.stringify(entries));
+                        renderJournalHistory();
+                    });
+                });
+            }
+        }
+
+        journalForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const text = journalEntry.value.trim();
+            if (text) {
+                const entries = JSON.parse(localStorage.getItem('zenJournalEntries') || '[]');
+                const date = new Date().toLocaleString();
+                entries.unshift({ text, date, mood: selectedMood });
+                localStorage.setItem('zenJournalEntries', JSON.stringify(entries));
+                journalEntry.value = '';
+                renderJournalHistory();
+            }
+        });
+
+        renderJournalHistory();
+    </script>
+</body>
+</html>
