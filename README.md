@@ -26,21 +26,6 @@ Your always-on AI therapist for managing stress, navigating emotions, and reclai
 3. Install the Live Server extension if not already installed
 4. Right-click on `index.html` and select "Open with Live Server"
 
-## Development
-
-The project structure is organized as follows:
-zencompanion/
-├── assets/
-│   └── logo.png
-├── css/
-│   └── styles.css
-├── index.html
-├── about.html
-├── grounding.html
-├── journal.html
-├── .gitignore
-└── README.md
-
 ## Customization
 - Edit about.html, grounding.html, and journal.html for content
 - Update `style.css` for branding
